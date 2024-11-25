@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+    # Airflow
+    airflow:
+        build: 
+            context:
+                ./services/airflow
+            args:
+                MLFLOW_ARTIFACT_ROOT: ${MLFLOW_ARTIFACT_ROOT}
+        env_file:
+            ./services/airflow/airflow.env
+        volumes:
+            - ./src/dags:/opt/airflow/dags
+            - ./src/steps:/opt/airflow/plugins/steps
+            - ./src/utils:/opt/airflow/plugins/utils
+            - ./logs/airflow:/opt/airflow/logs
+            - ./data:/opt/airflow/data
+            - ./artifacts:/opt/airflow/artifacts
+            - mlflow-data:${MLFLOW_ARTIFACT_ROOT}
+        ports:
+            - "8080:8080"
+        networks:
+            - my_network
+
+    # ML platform / experiment tracking
+    mlflow:
+        container_name: mlflow-server
+        # restart: always
+        build:
+            context:
+                ./services/mlflow
+            dockerfile:
+                Dockerfile
+            args:
+                MLFLOW_PORT: ${MLFLOW_PORT}
+                POSTGRES_PORT: ${POSTGRES_PORT}
+                MLFLOW_ARTIFACT_ROOT: ${MLFLOW_ARTIFACT_ROOT}
+        env_file:
+            - .env
+        networks:
+            - my_network
+        ports:
+            - "${MLFLOW_PORT}:${MLFLOW_PORT}"
+        volumes:
+            # note: this path must be mounted/accessible for all mlflow server and clients
+            - mlflow-data:${MLFLOW_ARTIFACT_ROOT}
+
+    # sql database
+    postgres:
+        container_name: postgres-server
+        image: postgres:15.3
+        # restart: always
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=postgres
+        networks:
+            - my_network
+        volumes:
+            - ./services/postgres/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+            - pgdata:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    # ui for database
+    pgadmin:
+        image: dpage/pgadmin4
+        # restart: always
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=pgadmin@gmail.com
+            - PGADMIN_DEFAULT_PASSWORD=SuperSecurePwdHere
+        networks:
+            - my_network
+        ports:
+            - "16543:80"
+        volumes:
+            - pgadmin-data:/var/lib/pgadmin
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+    # prediction service
+    prediction-service:
+        container_name: prediction-service
+        build:
+            context: ./services/prediction-service
+            dockerfile: Dockerfile
+            args:
+                PREDICTION_SERVICE_PORT: ${PREDICTION_SERVICE_PORT}
+        env_file:
+            - .env
+        environment:
+            - MLFLOW_TRACKING_URI=http://mlflow:${MLFLOW_PORT}
+        networks:
+            - my_network
+        ports:
+            - ${PREDICTION_SERVICE_PORT}:${PREDICTION_SERVICE_PORT}
+        volumes:
+            - mlflow-data:${MLFLOW_ARTIFACT_ROOT}
+            - ./services/prediction-service/app:/service/app
+            - ./data:/service/app/data
+
+    # Web UI interface
+    web-ui:
+        container_name: web-ui
+        build:
+            context: ./services/web-ui
+            dockerfile: Dockerfile
+            args:
+                WEB_UI_PORT: ${WEB_UI_PORT}
+        env_file:
+            - .env
+        networks:
+            - my_network
+        ports:
+            - ${WEB_UI_PORT}:${WEB_UI_PORT}
+        volumes:
+            - mlflow-data:${MLFLOW_ARTIFACT_ROOT}
+            - ./services/web-ui/app/:/service/app/
+            - ./data:/service/app/data
+
+# Define the network
+networks:
+  my_network:
+    driver: bridge
+
+volumes:
+  mlflow-data:
+  pgdata:
+  pgadmin-data:
