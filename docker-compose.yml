@@ -72,7 +72,7 @@ services:
         # restart: always
         environment:
             - PGADMIN_DEFAULT_EMAIL=pgadmin@gmail.com
-            - PGADMIN_DEFAULT_PASSWORD=SuperSecurePwdHere
+            - PGADMIN_DEFAULT_PASSWORD=pgadmin
         networks:
             - my_network
         ports:
