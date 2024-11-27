@@ -23,7 +23,7 @@ This project focuses on building a **churn prediction system**, leveraging machi
 3. **Web UI Services**
 - FastAPI: Backend service for handling predictions and API requests.
 - Streamlit: Frontend interface for visualizing predictions, reports, and model performance (e.g., confusion matrix, ROC curve, feature importance).
-5. **Database Management**
+4. **Database Management**
 - PostgreSQL: Centralized database for data storage, such as services' metadata, prediction results.
 # Tools / Technologies
 - Platform: [Docker](https://www.docker.com/)
@@ -37,21 +37,22 @@ This project focuses on building a **churn prediction system**, leveraging machi
 
 # How things work
 
-Run DAGs on airflow web service.
+- Run DAGs on airflow web service.
+
 ![airflow-dags](assets/airflow-dags.png)
 <h4 align="center">Airflow DAGs</h4>
 
-During the evaluation of training experiments, experimental information such as metrics and parameters is logged and managed by MLflow.
+- During the evaluation of training experiments, experimental information such as metrics and parameters is logged and managed by MLflow.
 
 ![mlflow-experiment](assets/mlflow-experiments.png)
 <h4 align="center">MLflow Experiment Tracking</h4>
 
-Models that meet the required conditions are registered and prepared for real-world deployment. Each model can be labeled according to its stage, such as "Staging" or "Production".
+- Models that meet the required conditions are registered and prepared for real-world deployment. Each model can be labeled according to its stage, such as "Staging" or "Production".
 
 ![mlflow-registered-models](assets/mlflow-resgistered-models.png)
 <h4 align="center">MLflow Registered Models</h4>
 
-The Streamlit-powered web page provides a quick overview of the data, model performance, and facilitates predictions.
+- The Streamlit-powered web page provides a quick overview of the data, model performance, and facilitates predictions.
 
 ![st-data-tab](assets/st-data-tab.png)
 <h4 align="center">Data Viewer on Streamlit</h4>
@@ -71,7 +72,7 @@ The Streamlit-powered web page provides a quick overview of the data, model perf
 ![st-local-tab](assets/st-loper1.png)
 <h4 align="center">Local Interpretable Model-Agnostic Explanations (LIME) on Streamlit</h4>
 
-Prediction results, along with Airflow metadata and MLflow metadata, are stored in PostgreSQL.
+- Prediction results, along with Airflow metadata and MLflow metadata, are stored in PostgreSQL.
 
 ![postgres-db](assets/postgre-db.png)
 <h4 align="center">Prediction Results Table on Postgres</h4>
