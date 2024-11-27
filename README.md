@@ -10,7 +10,7 @@
 This project focuses on building a **churn prediction system**, leveraging machine learning models such as GradientBoostingClassifier and LogisticRegression to classify customers as likely to churn or remain. It utilizes Airflow for workflow scheduling, MLflow for experiment tracking, Postgres for database storage, and FastAPI and Streamlit to provide a Web UI. The dataset consists of 10,000 records with approximately 20 features, including numeric and categorical data (ordinal and nominal), in the banking domain.
 
 ![framework](assets/framework-churn-prediction.png)
-<h4 align="center">Framework (Image source: Author)</h4>
+<h4 align="center">Framework</h4>
 
 # Key Features
 1. **Data Pipeline and Workflow Management**
@@ -39,42 +39,42 @@ This project focuses on building a **churn prediction system**, leveraging machi
 
 Run DAGs on airflow web service.
 ![airflow-dags](assets/airflow-dags.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Airflow DAGs</h4>
 
 During the evaluation of training experiments, experimental information such as metrics and parameters is logged and managed by MLflow.
 
 ![mlflow-experiment](assets/mlflow-experiments.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">MLflow Experiment Tracking</h4>
 
 Models that meet the required conditions are registered and prepared for real-world deployment. Each model can be labeled according to its stage, such as "Staging" or "Production".
 
 ![mlflow-registered-models](assets/mlflow-resgistered-models.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">MLflow Registered Models</h4>
 
 The Streamlit-powered web page provides a quick overview of the data, model performance, and facilitates predictions.
 
 ![st-data-tab](assets/st-data-tab.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Data Viewer on Streamlit</h4>
 
 ![st-global-tab](assets/st-glper1.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Model Information Viewer on Streamlit</h4>
 
 ![st-global-tab](assets/st-glper2.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Confusion Matrix & Feature Importances Viewer on Streamlit</h4>
 
 ![st-global-tab](assets/st-glper3.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">ROC Curves Viewer on Streamlit</h4>
 
 ![st-global-tab](assets/st-glper4.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Calibration Plots on Streamlit</h4>
 
 ![st-local-tab](assets/st-loper1.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Local Interpretable Model-Agnostic Explanations (LIME) on Streamlit</h4>
 
 Prediction results, along with Airflow metadata and MLflow metadata, are stored in PostgreSQL.
 
 ![postgres-db](assets/postgre-db.png)
-<h4 align="center">(Image source: Author)</h4>
+<h4 align="center">Prediction Results Table on Postgres</h4>
 
 
 # How to set up
